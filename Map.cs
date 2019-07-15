@@ -1,4 +1,4 @@
-/// <summary>
+        /// <summary>
         /// Mapping between two XML files.
         /// </summary>
         private static class Map
@@ -9,8 +9,8 @@
             private static readonly string MAPFILEPATH
                 = Directory.GetCurrentDirectory() + @"\Map\Map File.txt";
             /// <summary>
-            /// Contain all mapping pairs in between the template DCTU XML
-            /// and the selected ECATES Hardcard XML files.
+            /// Contain all mapping pairs in between the source XML
+            /// and the destination XML files.
             /// </summary>
             private static List<Pair> pairs = new List<Pair>();
 
@@ -44,8 +44,7 @@
                 else
                 {
                     Log.WriteLog("System - The map file does not exist.");
-                    MessageBox.Show("The map file does not exist. Add a map file to pull information from" +
-                        " the ECATES Hardcard XML and store in the DCTU XML.");
+                    MessageBox.Show("The map file does not exist.");
                 }
             }
 
@@ -81,8 +80,8 @@
                         if (attribute.Contains("="))
                         {
                             string[] subAttributes = attribute.Split('=');
-                            string attributeName = subAttributes[0];
-                            string value = subAttributes[1];
+                            string   attributeName = subAttributes[0];
+                            string   value         = subAttributes[1];
                             output.Add(new XElement(name, new XAttribute(attributeName, value)));
                             // If there is one more attribute, take a special route:
                             if (subs.Length == 3)
@@ -113,21 +112,21 @@
             /// </summary>
             /// <param name="hardcardXML">Hardcard XML.</param>
             /// <param name="dctuXML">DCTU XML.</param>
-            public static void FillXML(XDocument hardcardXML, XDocument dctuXML)
+            public static void FillXML(XDocument sourceXML, XDocument destinationXML)
             {
                 // Add mapping pairs from the map file.
                 AddMapping();
                 foreach (Pair pair in pairs)
                 {
-                    string value = GetValue(hardcardXML, pair.source);
+                    string value = GetValue(sourceXML, pair.source);
                     if (value == null)
                     {
-                        MessageBox.Show("Failed to get value from the Hardcard XML.");
-                        Log.WriteLog("System - Failed to get value from the Hardcard XML.");
+                        MessageBox.Show("Failed to get value from the source XML.");
+                        Log.WriteLog("System - Failed to get value from the source XML.");
                         ClearMapping();
                         return;
                     }
-                    PutValue(dctuXML, pair.destination, value);
+                    PutValue(destinationXML, pair.destination, value);
                 }
                 ClearMapping();
             }
